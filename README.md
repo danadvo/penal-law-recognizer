@@ -37,6 +37,6 @@ Clicking the button will return the classification of the given section (penalty
 
 You should see this:
 
-![screen](https://safenote.co/r/6045373a66e517@90364151)
+![screen](https://i.ibb.co/gP74dL6/Capture.png)
 
 5. Insert the content of the section and press thr button
