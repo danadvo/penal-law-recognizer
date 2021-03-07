@@ -12,13 +12,14 @@ determine if a given section in law is a penalty section.
 
 You may insert the content of the section (in Hebrew) on the website we've built.
 
-Clicking the button will run the following calculation:
+Our program will do the following calculation: 
 
 1. Create data set from the given data [tag, section_content]
 2. Spliting the data into train and test sets (80%-20%)
 3. Create a bag of words
 4. Create a classifier by training the model
-5. Return the classification of the given section (penalty / not penalty)
+
+Clicking the button will return the classification of the given section (penalty / not penalty)
 
 #### <ins> Running the project: </ins>
 
@@ -36,6 +37,6 @@ Clicking the button will run the following calculation:
 
 You should see this:
 
-![screen](https://filebin.net/rnephh7q6zahoc5l/Capture.PNG?t=qu9p1n26)
+![screen](https://safenote.co/r/6045373a66e517@90364151)
 
 5. Insert the content of the section and press thr button
