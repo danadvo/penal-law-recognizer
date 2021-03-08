@@ -1,6 +1,7 @@
 import sys
 from bag_of_words import *
 from ml import train_model, split_train_and_set, use_model
+import pandas as pd
 
 
 def calculate(content):
@@ -20,7 +21,9 @@ def calculate(content):
 
     vector_content = [make_vector(content, bag_of_words)]
     y_predict = classifier.predict(vector_content)
-    return y_predict[0]
+    if y_predict[0]==1:
+        return "True"
+    return "False"
 
 
 if __name__ == '__main__':
