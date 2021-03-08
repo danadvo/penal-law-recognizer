@@ -37,6 +37,6 @@ Clicking the button will return the classification of the given section (penalty
 
 You should see this:
 
-![screen](https://i.ibb.co/gP74dL6/Capture.png)
+![screen](https://iili.io/qFjLrv.png)
 
 5. Insert the content of the section and press thr button
