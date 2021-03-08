@@ -39,4 +39,4 @@ You should see this:
 
 ![screen](https://iili.io/qFjLrv.png)
 
-5. Insert the content of the section and press thr button
+5. Insert the content of the section and press the button
