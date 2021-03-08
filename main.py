@@ -14,15 +14,13 @@ def calculate(content):
     train_data, train_labels = get_vectors_and_labels(train_df, bag_of_words)
     classifier = train_model(train_data, train_labels)
 
-    # # bag_of_words = set_vector_keyword_index(test_df)
-    # test_data, test_labels = get_vectors_and_labels(train_df, bag_of_words)
+    # # evaluate the model on the test set
+    # test_data, test_labels = get_vectors_and_labels(test_df, bag_of_words)
     # use_model(classifier, test_data, test_labels)
 
-    # classifier(make_vector(content, bag_of_words)
     vector_content = [make_vector(content, bag_of_words)]
-    y_prob = classifier.predict_proba(vector_content)[:, 1]
-    y_predict = "True" if y_prob[0] > 0.513 else "False"
-    return y_predict
+    y_predict = classifier.predict(vector_content)
+    return y_predict[0]
 
 
 if __name__ == '__main__':
