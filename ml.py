@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-import sklearn
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import roc_curve, roc_auc_score, confusion_matrix, plot_confusion_matrix
 from sklearn.model_selection import train_test_split
 
 
@@ -14,22 +14,29 @@ def split_train_and_set(df):
 
 
 def train_model(x_train, y_train):
-    x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.20, random_state=42)
-    # %% LogisticRegressionClassifier
-    lr_clf = LogisticRegression(penalty='l2', C=10)
-    lr_clf.fit(x_train, y_train)
-    return lr_clf
-
-
-def evaluate_model(lr, data, labels):
-    pass
+    # clf = LogisticRegression(C=10, random_state=0)
+    # clf = SGDClassifier(loss='hinge', penalty=None, alpha=1e-3, random_state=42)
+    clf = MultinomialNB()
+    clf.fit(x_train, y_train)
+    return clf
 
 
 def use_model(clf, x_test, y_test):
-    y_proba = clf.predict_proba(x_test)[:, 1]
-    fpr, tpr, roc_auc = auc(y_test, y_proba)
-    y_predict = list(map(lambda x: 1 if x > 0.513 else 0, y_proba))
-    eval_classifier = evaluate_prediction(y_proba, y_predict, y_test)
+    y_predict = clf.predict(x_test)
+
+    # display accuracy, percision and recall
+    eval_classifier = evaluate_prediction(y_predict, y_test)
+
+    # display confusion matrix and normalized confusion matrix
+    titles_options = [("Confusion matrix, without normalization", None),
+                      ("Normalized confusion matrix", 'true')]
+    for title, normalize in titles_options:
+        disp = plot_confusion_matrix(clf, x_test, y_test, normalize=normalize)
+        disp.ax_.set_title(title)
+
+        print(title)
+        print(disp.confusion_matrix)
+
     print(eval_classifier)
 
 
@@ -42,31 +49,23 @@ def get_metric_and_best_threshold_from_roc_curve(tpr, fpr, thresholds, num_pos_c
     return np.amax(acc), best_threshold
 
 
-def evaluate_prediction(y_proba, y_predict, y_test):
+def evaluate_prediction(y_predict, y_test, y_proba=None):
     tn, fp, fn, tp = confusion_matrix(y_test, y_predict).ravel()
     percision = tp / (tp + fp)
     recall = tp / (tp + fn)
     accuracy = (tp + tn) / (tp + fp + tn + fn)
 
-    # compute ROC
-    fpr, tpr, thresholds = roc_curve(y_test, y_proba)
-    # Compute Area Under the ROC from prediction scores
-    roc_auc = roc_auc_score(y_test, y_proba)
+    if y_proba is not None:
+        # compute ROC
+        fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+        # Compute Area Under the ROC from prediction scores
+        roc_auc = roc_auc_score(y_test, y_proba)
 
-    # compute best threshold
-    _, best_threshold = get_metric_and_best_threshold_from_roc_curve(tpr, fpr, thresholds, tp + fn, tn + fp)
-    # print(f"best_threshold = {best_threshold}")
-    fpr = fp / (fp + tn)
-    tpr = tp / (tp + fn)
+        # compute best threshold
+        _, best_threshold = get_metric_and_best_threshold_from_roc_curve(tpr, fpr, thresholds, tp + fn, tn + fp)
 
-    # print([success_rate, percision, recall, accuracy])
-    return {'percision': percision, 'recall': recall, 'accuracy': accuracy, 'tn': tn, 'fp': fp, 'fn': fn, 'tp': tp, 'fpr': fpr, 'tpr': tpr, 'roc_auc': roc_auc, 'best_threshold': best_threshold}
+        fpr = fp / (fp + tn)
+        tpr = tp / (tp + fn)
+        return {'percision': percision, 'recall': recall, 'accuracy': accuracy, 'fpr': fpr, 'tpr': tpr, 'roc_auc': roc_auc, 'best_threshold': best_threshold}
 
-
-def auc(y_test, y_predict_proba):
-    # compute ROC
-    fpr, tpr, _ = roc_curve(y_test, y_predict_proba)
-    # Compute Area Under the ROC from prediction scores
-    roc_auc = roc_auc_score(y_test, y_predict_proba)
-    print(f"roc_auc = {roc_auc}")
-    return fpr, tpr, roc_auc
+    return {'percision': percision, 'recall': recall, 'accuracy': accuracy}
